@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine untuk Kamu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* Gaya dasar */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #e2e1e0;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 100%;
+            width: 100%;
+            padding: 20px;
+            position: relative;
+        }
+
+        .section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .active {
+            display: block;
+            opacity: 1;
+        }
+
+        button {
+            background-color: transparent;
+            color: #ff4d4d;
+            border: 2px solid #ff4d4d;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease-in-out;
+            margin: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        button:hover {
+            background-color: #ff4d4d;
+            color: white;
+        }
+
+        button:active {
+            background-color: #ff4d4d;
+            color: white;
+        }
+
+        /* Gaya untuk halaman Surat */
+        #surat {
+            background-color: #fff;
+            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+            background-size: 100% 24px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            position: relative;
+            border: 1px solid #e0e0e0;
+        }
+
+        #surat h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        #surat h1 img {
+            width: 40px;
+            height: 40px;
+        }
+
+        #surat p {
+            font-size: 18px;
+            line-height: 1.6;
+            text-align: justify;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            color: #555;
+        }
+
+        /* Gaya untuk popup kertas */
+        .paper-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .paper-content {
+            background-color: white;
+            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+            background-size: 100% 24px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .paper-slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .paper-page {
+            min-width: 100%;
+            box-sizing: border-box;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .paper-page h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #ff4d4d;
+        }
+
+        .paper-page p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+            white-space: pre-wrap;
+            overflow: hidden;
+            border-right: 2px solid #ff4d4d;
+            animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #ff4d4d; }
+        }
+
+        .close-button {
+            display: none;
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 25px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .close-button:hover {
+            background-color: #e60000;
+        }
+
+        /* Gaya untuk halaman Foto */
+        #foto {
+            padding: 20px;
+        }
+
+        #foto h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        #foto h1 img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            width: 100%;
+            aspect-ratio: 3 / 2;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
+            cursor: pointer;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card:hover img {
+            transform: scale(1.1);
+        }
+
+        .love-container {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .love-button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: #ff4d4d;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .love-button.loved {
+            color: #ff4d4d;
+        }
+
+        /* Gaya untuk Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 90%;
+            width: 300px;
+        }
+
+        .modal-content p {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .modal-content .close-button {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: background-color 0.3s;
+        }
+
+        .modal-content .close-button:hover {
+            background-color: #e60000;
+        }
+
+        /* Gaya untuk Durasi Kenalan */
+        .duration-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .duration-box {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 10px 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .duration-box span {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff4d4d;
+        }
+
+        .duration-box small {
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* Media Queries untuk Responsivitas */
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            #surat, #kenalan, #foto, #cerita {
+                padding: 15px;
+            }
+
+            #surat h1, #kenalan h1, #foto h1, #cerita h1 {
+                font-size: 20px;
+            }
+
+            #surat p, #kenalan p, #cerita .story-content {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            #surat, #kenalan, #foto, #cerita {
+                padding: 10px;
+            }
+
+            #surat h1, #kenalan h1, #foto h1, #cerita h1 {
+                font-size: 18px;
+            }
+
+            #surat p, #kenalan p, #cerita .story-content {
+                font-size: 14px;
+            }
+        }
+
+        /* Gaya untuk tombol navigasi */
+        .nav-buttons {
+            display: flex;
+            justify-content: center; /* Memisahkan tombol ke kiri dan kanan */
+            margin-top: 20px; /* Tambahkan margin atas jika diperlukan */
+        }
+        .center-button {
+        display: flex;
+        justify-content: center; /* Pusatkan tombol secara horizontal */
+        margin-top: 20px; /* Tambahkan margin atas jika diperlukan */
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Bagian Surat -->
+        <section id="surat" class="section active">
+            <h1>
+                <img src="https://img.icons8.com/fluency/48/000000/love-letter.png" alt="Surat">
+                Surat untuk Kamu
+            </h1>
+            <p>Cantiku Jasmine Raysha Kamila, Di hari Valentine ini.. eh masih besok kan ya? tapi gapapa deh sekarang aja.. kalo ada waktunya tolong dibuka yaa.. dipahamin perlahan</p>
+            <div class="center-button">
+                <button onclick="openPaperPopup()">
+                    <img src="https://img.icons8.com/fluency/30/000000/gift.png" alt="Hadiah">
+                    Buka dan Baca Sayang
+                </button>
+            </div>
+        </section>
+    
+        <!-- Bagian Kenalan -->
+        <section id="kenalan" class="section">
+            <h1>
+                <img src="https://img.icons8.com/fluency/48/000000/calendar.png" alt="Kenalan">
+                Sudah berapa lama kita kenal?
+            </h1>
+            <p>Semoga kita ga asing ya HAHAHHA</p>
+            <div class="duration-container" id="durationContainer">
+                <!-- Durasi akan diisi oleh JavaScript -->
+            </div>
+        </section>
+
+        <!-- Bagian Foto -->
+        <section id="foto" class="section">
+            <h1>
+                <img src="https://img.icons8.com/fluency/48/000000/photo-album.png" alt="Foto">
+                ❤️Foto Kita❤️
+            </h1>
+            <div class="gallery">
+                <div class="card" ondblclick="showPhotoPopup('https://via.placeholder.com/600x400', 'Foto pas UKM EXPO... Cantik Banget cok')">
+                    <img src="dontopen/a1.jpg" alt="Foto 1">
+                    <div class="love-container">
+                        <button class="love-button" onclick="toggleLove(this)">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card" ondblclick="showPhotoPopup('https://via.placeholder.com/600x400', 'Foto pas make kemeja dari kelompok 6 with my beatiful girl.')">
+                    <img src="dontopen/a2.jpg" alt="Foto 2">
+                    <div class="love-container">
+                        <button class="love-button" onclick="toggleLove(this)">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card" ondblclick="showPhotoPopup('https://via.placeholder.com/600x400', 'Foto pas main berdua sampe malem HAHAHAH')">
+                    <img src="dontopen/a3.jpg" alt="Foto 3">
+                    <div class="love-container">
+                        <button class="love-button" onclick="toggleLove(this)">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card" ondblclick="showPhotoPopup('https://via.placeholder.com/600x400', 'First Foto kita di PKKMB UPNVJ.')">
+                    <img src=dontopen/a4.jpg alt="Foto 4">
+                    <div class="love-container">
+                        <button class="love-button" onclick="toggleLove(this)">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bagian Cerita -->
+        <section id="cerita" class="section">
+            <h1>
+                <img src="https://img.icons8.com/fluency/48/000000/book.png" alt="Cerita">
+                ❤️Pesan Untuk Kamu❤️
+            </h1>
+            <div class="story-content">
+                <p>Dari pertemuan pertama kita hingga detik ini, bertemu denganmu adalah sebuah rasa syukur yang selalu kuhaturkan kepada Allah SWT serta setiap momen bersamamu adalah anugerah yang diberikan oleh Allah SWT Kepada hamba</p>
+                <p>Kita pernah melalui banyak hal bersama, mulai dari tawa hingga air mata. Walaupun hubungan ini tidak berlangsung lama.</p>
+                <p>Terima kasih sudah pernah menjadi bagian dari hidupku. Aku mencintaimu lebih dari apapun. mungkin? gatau si soalnya aku sudah merasa kamu mulai cool abiss HAHAHAA</p>
+                <p>Kudoakan segala kebaikan datang untukmu dari segala penjuru serta kesehatan dan keselamatan menyertaimu serta kemudahan dalam segala kegiatan rumah maupun kuliah.</p>
+                <p>Semoga perasaan kamu ke aku selalu baik yaaa</p>
+                <p>I Always Love You</p>
+                <p>Muhammad Durmuji</p>
+                <p>14 Februari 2025</p>
+            </div>
+        </section>
+
+        <!-- Tombol Navigasi -->
+        <div class="nav-buttons">
+            <button id="prevButton" onclick="prevPage()">
+                <i class="fas fa-arrow-left"></i> Sebelumnya
+            </button>
+            <button id="nextButton" onclick="nextPage()">
+                Selanjutnya <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Popup Kertas -->
+    <div class="paper-popup" id="paperPopup">
+        <div class="paper-content">
+            <div class="paper-slider" id="paperSlider">
+                <!-- Halaman 1 -->
+                <div class="paper-page">
+                    <h2>Halaman 1</h2>
+                    <p class="typing-animation" data-text="Cantikku, Di hari Valentine ini, aku ingin mengungkapkan betapa berartinya kamu dalam hidupku..."></p>
+                </div>
+                <!-- Halaman 2 -->
+                <div class="paper-page">
+                    <h2>Halaman 2</h2>
+                    <p class="typing-animation" data-text="Setiap hari bersamamu adalah anugerah terindah dalam hidupku. Karena kamu pernah membuatku merasa dianggap ada? kek anying cewe secantik lu bisa suka sama gw HAHHA."></p>
+                </div>
+                <!-- Halaman 3 -->
+                <div class="paper-page">
+                    <h2>Halaman 3</h2>
+                    <p class="typing-animation" data-text="Aku bersyukur bisa mengenalmu, pernah mencintaimu, dan menghabiskan waktu bersamamu walaupun tidak di waktu yang lama HAHAHAA."></p>
+                </div>
+                <!-- Halaman 4 -->
+                <div class="paper-page">
+                    <h2>Halaman 4</h2>
+                    <p class="typing-animation" data-text="Terima kasih telah menjadi bagian dari hidupku. Aku mencintaimu lebih dari apapun❤️❤️❤️."></p>
+                </div>
+                <!-- Halaman 5 -->
+                <div class="paper-page">
+                    <h2>Halaman 5</h2>
+                    <p class="typing-animation" data-text="Aku berharap kita bisa terus bersama selamanya. Selamat Hari Kasih sayang yang selalu aku sayang, cantiknya aku Jasmine Raysha Kamila! ❤️"></p>
+                </div>
+            </div>
+            <button class="close-button" id="closePaperButton" onclick="closePaperPopup()">Tutup</button>
+        </div>
+    </div>
+
+    <!-- Modal untuk Notifikasi Popup -->
+    <div id="notificationPopup" class="modal">
+        <div class="modal-content">
+            <p id="notificationMessage"></p>
+            <button class="close-button" onclick="closeNotificationPopup()">Tutup</button>
+        </div>
+    </div>
+
+    <!-- Modal untuk Detail Foto -->
+    <div id="photoDetailPopup" class="modal">
+        <div class="modal-content">
+            <img id="detailPhoto" src="" alt="Detail Foto" style="width: 100%; border-radius: 10px;">
+            <p id="detailCaption"></p>
+            <button class="close-button" onclick="closePhotoDetailPopup()">Tutup</button>
+        </div>
+    </div>
+
+       <script>
+        let currentPage = 0;
+        const pages = ["surat", "kenalan", "foto", "cerita"];
+        let currentPaperPage = 0;
+        const totalPaperPages = 5;
+
+        // Fungsi untuk menampilkan halaman berdasarkan indeks
+        function showPage(index) {
+            document.querySelectorAll(".section").forEach(section => {
+                section.classList.remove("active");
+            });
+            document.getElementById(pages[index]).classList.add("active");
+        }
+
+        // Fungsi untuk navigasi ke halaman berikutnya
+        function nextPage() {
+            if (currentPage < pages.length - 1) {
+                currentPage++;
+                showPage(currentPage);
+
+                // Tambahkan efek love ke tombol "Selanjutnya"
+                const nextButton = document.getElementById("nextButton");
+                nextButton.innerHTML = `Selanjutnya <i class="fas fa-heart"></i>`;
+
+                // Set timeout untuk mengembalikan tombol ke keadaan semula
+                setTimeout(() => {
+                    nextButton.innerHTML = `Selanjutnya <i class="fas fa-arrow-right"></i>`;
+                }, 1000); // 1 detik
+            }
+        }
+
+        // Fungsi untuk navigasi ke halaman sebelumnya
+        function prevPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                showPage(currentPage);
+
+                // Tambahkan efek love ke tombol "Sebelumnya"
+                const prevButton = document.getElementById("prevButton");
+                prevButton.innerHTML = `<i class="fas fa-heart"></i> Sebelumnya`;
+
+                // Set timeout untuk mengembalikan tombol ke keadaan semula
+                setTimeout(() => {
+                    prevButton.innerHTML = `<i class="fas fa-arrow-left"></i> Sebelumnya`;
+                }, 1000); // 1 detik
+            }
+        }
+
+        // Fungsi untuk membuka popup kertas
+        function openPaperPopup() {
+            const paperPopup = document.getElementById("paperPopup");
+            paperPopup.style.display = "flex";
+            currentPaperPage = 0;
+            updatePaperSlider();
+            const textElements = document.querySelectorAll('.paper-page p');
+            textElements.forEach((el) => {
+                el.innerHTML = ''; // Kosongkan teks sebelumnya
+                typeText(el, el.dataset.text, 0); // Mulai animasi
+            });
+        }
+
+        // Fungsi untuk menutup popup kertas
+        function closePaperPopup() {
+            const paperPopup = document.getElementById("paperPopup");
+            paperPopup.style.display = "none";
+        }
+
+        // Fungsi untuk menggeser kertas ke halaman berikutnya
+        function nextPaperPage() {
+            if (currentPaperPage < totalPaperPages - 1) {
+                currentPaperPage++;
+                updatePaperSlider();
+            }
+            if (currentPaperPage === totalPaperPages - 1) {
+                const closeButton = document.getElementById("closePaperButton");
+                closeButton.style.display = "block";
+            }
+        }
+
+        // Fungsi untuk memperbarui tampilan slider kertas
+        function updatePaperSlider() {
+            const paperSlider = document.getElementById("paperSlider");
+            paperSlider.style.transform = `translateX(-${currentPaperPage * 100}%)`;
+        }
+
+        // Event listener untuk geser kertas
+        document.getElementById("paperSlider").addEventListener("click", nextPaperPage);
+
+        // Fungsi untuk menampilkan popup detail foto
+        function showPhotoPopup(imageSrc, caption) {
+            const photoPopup = document.getElementById("photoDetailPopup");
+            const detailPhoto = document.getElementById("detailPhoto");
+            const detailCaption = document.getElementById("detailCaption");
+
+            detailPhoto.src = imageSrc;
+            detailCaption.textContent = caption;
+            photoPopup.style.display = "flex";
+        }
+
+        // Fungsi untuk menutup popup detail foto
+        function closePhotoDetailPopup() {
+            const photoPopup = document.getElementById("photoDetailPopup");
+            photoPopup.style.display = "none";
+        }
+
+        // Fungsi untuk toggle love button
+        function toggleLove(button) {
+            const isLoved = button.classList.toggle("loved");
+            const heartIcon = button.querySelector("i");
+
+            if (isLoved) {
+                heartIcon.classList.remove("far");
+                heartIcon.classList.add("fas");
+                showNotification("AWW... Terima kasih Cantik! ❤️");
+            } else {
+                heartIcon.classList.remove("fas");
+                heartIcon.classList.add("far");
+                showNotification("Kamu udah ga sayang sama aku ya? :(");
+            }
+        }
+
+        // Fungsi untuk menampilkan notifikasi popup
+        function showNotification(message) {
+            const popup = document.getElementById("notificationPopup");
+            const messageElement = document.getElementById("notificationMessage");
+
+            messageElement.textContent = message; // Set pesan notifikasi
+            popup.style.display = "flex"; // Tampilkan modal
+
+            // Set timeout untuk menutup notifikasi setelah 3 detik
+            setTimeout(() => {
+                popup.style.display = "none";
+            }, 3000);
+        }
+
+        // Fungsi untuk menutup notifikasi popup
+        function closeNotificationPopup() {
+            const popup = document.getElementById("notificationPopup");
+            popup.style.display = "none";
+        }
+
+        // Fungsi untuk menghitung durasi kenalan
+        function calculateDuration() {
+            const startDate = new Date("2024-07-27T00:00:00"); // Tanggal mulai kenalan
+            const now = new Date(); // Waktu sekarang
+            const diff = now - startDate; // Selisih waktu dalam milidetik
+
+            // Hitung tahun, bulan, hari, jam, menit, detik, dan milidetik
+            const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
+            const months = Math.floor((diff % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30));
+            const days = Math.floor((diff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            const milliseconds = diff % 1000;
+
+            // Tampilkan durasi dalam box
+            const durationContainer = document.getElementById("durationContainer");
+            durationContainer.innerHTML = `
+                <div class="duration-box">
+                    <span>${years}</span>
+                    <small>Tahun</small>
+                </div>
+                <div class="duration-box">
+                    <span>${months}</span>
+                    <small>Bulan</small>
+                </div>
+                <div class="duration-box">
+                    <span>${days}</span>
+                    <small>Hari</small>
+                </div>
+                <div class="duration-box">
+                    <span>${hours}</span>
+                    <small>Jam</small>
+                </div>
+                <div class="duration-box">
+                    <span>${minutes}</span>
+                    <small>Menit</small>
+                </div>
+                <div class="duration-box">
+                    <span>${seconds}</span>
+                    <small>Detik</small>
+                </div>
+                <div class="duration-box">
+                    <span>${milliseconds}</span>
+                    <small>Milidetik</small>
+                </div>
+            `;
+        }
+
+        // Fungsi untuk mengetik teks dengan animasi
+        function typeText(element, text, index) {
+            if (index < text.length) {
+                element.innerHTML += text.charAt(index);
+                index++;
+                setTimeout(() => typeText(element, text, index), 100); // Kecepatan animasi
+            }
+        }
+
+        // Jalankan fungsi showText saat halaman dimuat
+        document.addEventListener("DOMContentLoaded", function() {
+            showPage(currentPage); // Tampilkan halaman pertama saat dimuat
+            calculateDuration(); // Hitung dan tampilkan durasi kenalan
+
+            // Memutar lagu otomatis saat halaman dimuat
+            const audio = document.getElementById("backgroundMusic");
+            audio.play().catch(error => {
+                console.log("Autoplay tidak diizinkan. Silakan klik untuk memutar musik.");
+            });
+
+            // Update durasi setiap 100 milidetik
+            setInterval(calculateDuration, 100);
+        });
+    </script>
+    <h2 id="header" class="typing-animation"></h2> <!-- Header baru -->
+</body>
+</html>
